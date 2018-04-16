@@ -10,7 +10,7 @@ Step 2. Create meta-data files with matching names with information on the indiv
 
 Example meta1-2.txt
 
-Files MUST have these columns:
+Files MUST have these columns:  
 unique_id	library_id	person	date_submit	date_return	gbs_protocol	illumina_type	entry	p1_enzyme	p1_recog_site	p1_hang_seq	p1_index	p1_index_seq	p1_expect_seq	p2_enzyme	p2_recog_sit	p2_hang_seq	p2_index	p2_index_seq	p2_expect_seq	comment  
 i01_17FL0107-10_i06	ReFUSC4_1	Josie_Bloom	3/20/2018	4/4/2018	RW-Lab	HiSeq2500	17FL0107-10	Csp6I	GTAC	C	Pi01	AACAATA	AACAATAC	NgoMIV	GCCGGC	C	Pi06	N/A	N/A	N/A  
 i09_17FL0107-11_i06	ReFUSC4_1	Josie_Bloom	3/20/2018	4/4/2018	RW-Lab	HiSeq2500	17FL0107-11	Csp6I	GTAC	C	Pi09	CCACCTA	CCACCTAC	NgoMIV	GCCGGC	C	Pi06	N/A	N/A	N/A  
