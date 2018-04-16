@@ -29,7 +29,7 @@ The result of the pipepline is a series of directories named data1-1snp to data2
 
 Step 4. Filter the raw SNPs to keep only the SNPs previously called on the training data samples (~8k total).  
 
-[File with the list of 8k SNPs used to fit estimate the realized relationship matrix in the training data]()
+[File with the list of 8k SNPs used to fit estimate the realized relationship matrix in the training data](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/genoRefus_original_training_site_info.txt)
 
 [Bash script to filter SNPs from each set of 8 samples to keep only those included in the original 8k and create a combined file with all samples]()
 
