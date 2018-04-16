@@ -27,4 +27,13 @@ Step 3. Run the RedRep pipeline:
 
 The result of the pipepline is a series of directories named data1-1snp to data2-4snp, each containing a .vcf file named combined.snp.vcf that has the SNPs called for one index of one library. In this case we have two 192-plex libraries, each has 48 samples in each of 4 index sets.  
 
-Step 4. Filter the raw SNPs to keep only the SNPs previously called on the training data samples (~8k total).
+Step 4. Filter the raw SNPs to keep only the SNPs previously called on the training data samples (~8k total).  
+
+[File with the list of 8k SNPs used to fit estimate the realized relationship matrix in the training data]()
+
+[Bash script to filter SNPs from each set of 8 samples to keep only those included in the original 8k and create a combined file with all samples]()
+
+[Bash script to check depth and missing data rates]()
+
+Step 5. 
+
