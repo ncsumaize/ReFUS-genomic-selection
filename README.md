@@ -17,3 +17,4 @@ i09_17FL0107-11_i06	ReFUSC4_1	Josie_Bloom	3/20/2018	4/4/2018	RW-Lab	HiSeq2500	17
 i10_17FL0107-12_i06	ReFUSC4_1	Josie_Bloom	3/20/2018	4/4/2018	RW-Lab	HiSeq2500	17FL0107-12	Csp6I	GTAC	C	Pi10	TTGTTTA	TTGTTTAC	NgoMIV	GCCGGC	C	Pi06	N/A	N/A	N/A  
 
 
+[I'm an inline-style link](https://www.google.com)
