@@ -16,7 +16,7 @@ i01_17FL0107-10_i06	ReFUSC4_1	Josie_Bloom	3/20/2018	4/4/2018	RW-Lab	HiSeq2500	17
 i09_17FL0107-11_i06	ReFUSC4_1	Josie_Bloom	3/20/2018	4/4/2018	RW-Lab	HiSeq2500	17FL0107-11	Csp6I	GTAC	C	Pi09	CCACCTA	CCACCTAC	NgoMIV	GCCGGC	C	Pi06	N/A	N/A	N/A  
 i10_17FL0107-12_i06	ReFUSC4_1	Josie_Bloom	3/20/2018	4/4/2018	RW-Lab	HiSeq2500	17FL0107-12	Csp6I	GTAC	C	Pi10	TTGTTTA	TTGTTTAC	NgoMIV	GCCGGC	C	Pi06	N/A	N/A	N/A  
 
-[An example of a grid layout of DNA samples in 96-well plate format]()
+[An example of a grid layout of DNA samples in 96-well plate format](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/ReFUS%20C4%20NGS%20Library%20plate%20layout.csv)
 
 [Here is a python script to generate metadata files based on grid layout file](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/Reformat%20plate%20layouts%20to%20metadata%20files%20for%20RedRep.py)  
 
