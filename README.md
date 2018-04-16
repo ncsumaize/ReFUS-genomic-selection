@@ -31,7 +31,7 @@ Step 4. Filter the raw SNPs to keep only the SNPs previously called on the train
 
 [File with the list of 8k SNPs used to fit estimate the realized relationship matrix in the training data](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/genoRefus_original_training_site_info.txt)
 
-[Bash script to filter SNPs from each set of 8 samples to keep only those included in the original 8k and create a combined file with all samples]()
+[Bash script to filter SNPs from each set of 8 samples to keep only those included in the original 8k and create a combined file with all samples](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/filter_combine_SNPs.sh)
 
 [Bash script to check depth and missing data rates]()
 
