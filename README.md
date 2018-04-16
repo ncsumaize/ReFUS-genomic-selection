@@ -23,4 +23,8 @@ i10_17FL0107-12_i06	ReFUSC4_1	Josie_Bloom	3/20/2018	4/4/2018	RW-Lab	HiSeq2500	17
 Step 3. Run the RedRep pipeline:
 
 [Publication by Manching et al. 2017](http://www.g3journal.org/content/7/7/2161)  
-[RedRep GitHub page](https://github.com/UD-CBCB/RedRep)
+[RedRep GitHub page](https://github.com/UD-CBCB/RedRep)  
+
+The result of the pipepline is a series of directories named data1-1snp to data2-4snp, each containing a .vcf file named combined.snp.vcf that has the SNPs called for one index of one library. In this case we have two 192-plex libraries, each has 48 samples in each of 4 index sets.  
+
+Step 4. Filter the raw SNPs to keep only the SNPs previously called on the training data samples (~8k total).
