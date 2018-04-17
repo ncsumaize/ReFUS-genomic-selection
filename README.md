@@ -33,9 +33,11 @@ Step 4. Filter the raw SNPs to keep only the SNPs previously called on the train
 
 [Bash script to filter SNPs from each set of 8 samples to keep only those included in the original 8k and create a combined file with all samples](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/filter_combine_SNPs.sh)
 
-[Bash script to check depth and missing data rates](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/filter_SNPs_depth.sh)
+[Bash script to output call depth and genotype calls for QC](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/filter_SNPs_depth.sh)
 
-Step 5. [Do initial QC checks of depth and missing call rates across individuals and across markers](). To reduce heterozygosity call error, change homozygous calls with depth < 8 to missing. Homozygous calls with depth >= 8 should have only around 1% chance of het mis-call, the error rate gets much higher for lower depth calls.  
+I had some cases where individual sub-files were not processed properly, there was no error message, but only part of the SNPs were processed and those individuals were systematically missing all markers on some chromosomes. Check the log files in each directory to make sure the numbers of SNPs and individuals retained are reasonable.
+
+Step 5. [Do initial QC checks of depth and missing call rates across individuals and across markers](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/ReFUS_C4_GBS_depth_analysis.html). To reduce heterozygosity call error, change homozygous calls with depth < 8 to missing. Homozygous calls with depth >= 8 should have only around 1% chance of het mis-call, the error rate gets much higher for lower depth calls.  
 
 | # reads	| p(Het mis-call) | 
 | ------- |:----------------| 
@@ -54,7 +56,25 @@ Step 5. [Do initial QC checks of depth and missing call rates across individuals
 
 Remove SNPs with mean depth > 120 (likely paralogs with multiple areas of alignment) and SNPs with > 50% missing call rate. After filtering SNPs, then remove individuals with > 60% missing data. Then write out two flat files with the names of SNPs and individuals to keep in final data set (REFUSC4_SNPs_in_final_set.txt and REFUSC4_indv_in_final_set.txt). We will use these files in next step.  
 
-Step 6. 
+Step 6. Transfer the SNP and individual list files to Linux system. Use bash script to keep only the desired SNPs and individuals from the previous vcf file and output as REFUSC4final.recode.vcf. 
+
+vcftools --gzvcf ~/RedRep/ReFUS/REFUSC4.subset.SNP.vcf.gz --keep ReFUSC4_indv_in_final_set.txt --out REFUSC4dropindvs --recode
+vcftools --vcf ~/RedRep/ReFUS/REFUSC4dropindvs.recode.vcf --positions ReFUSC4_SNPs_in_final_set.txt --out REFUSC4final --recode
+
+Step 7. Open new vcf in TASSEL and export the data set as HapMap format: REFUSC4final.vcf
+
+Step 8. [R script to edit the training data set genotype file before we can merge with the new cycle samples file](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/Get%20SNP%20site%20list%20from%20training%20data%20to%20filter%20C4%20GBS%20data.R). The previous version had very long marker names tracking the position information from AGPv2, 3, and 4!. Here we trim that to just the usual AGPv4 site names, and this will match with the new file marker names.  
+
+Step 9. [R script to join the C3 training genotype data and current cycle C4 data](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/Join%20ReFUSC3%20training%20and%20C4%20SNPs.R). This will produce the joined genotype data file in HapMap format: REFUSC3_4_join.mp.txt  
+
+Step 10. Open joined HapMap file with both training and C4 individuals in TASSEL. 
+  Impute missing data with LDKNNi with default options: High LD sites = 30, Nearest Neighbors = 10, Max distance = 10k.  
+  This reduces missing data to 0.00644.  
+  Filter out markers with MAF < 0.01, maximum heterozygosity > 0.70
+  This leaves 3037 markers. (Output this file as REFUSC3_4_join.imp.hmp.txt)
+  Compute kinship matrix using centered IBS option, output matrix as REFUSC3_4_join_impK.txt
+
+
 
 
 
