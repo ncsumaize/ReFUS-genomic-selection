@@ -43,7 +43,7 @@ Filter the raw SNPs to keep only the SNPs previously called on the training data
 I had some cases where individual sub-files were not processed properly, there was no error message, but only part of the SNPs were processed and those individuals were systematically missing all markers on some chromosomes. Check the log files in each directory to make sure the numbers of SNPs and individuals retained are reasonable.
 
 ## Step 5. 
-[Do initial QC checks of depth and missing call rates across individuals and across markers](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/ReFUS_C4_GBS_depth_analysis.html). To reduce heterozygosity call error, change homozygous calls with depth < 8 to missing. Homozygous calls with depth >= 8 should have only around 1% chance of het mis-call, the error rate gets much higher for lower depth calls.  
+[Do initial QC checks of depth and missing call rates across individuals and across markers](http://htmlpreview.github.io/?https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/ReFUS_C4_GBS_depth_analysis.html). To reduce heterozygosity call error, change homozygous calls with depth < 8 to missing. Homozygous calls with depth >= 8 should have only around 1% chance of het mis-call, the error rate gets much higher for lower depth calls.  
 
 | # reads	| p(Het mis-call) | 
 | ------- |:----------------| 
