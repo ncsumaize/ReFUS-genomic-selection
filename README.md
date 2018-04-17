@@ -1,5 +1,5 @@
 # ReFUS-genomic-selection
-##Scripts to get from multiplexed sequencing reads to GEBVs and selected individuals via genomic selection in ReFUS population
+## Scripts to get from multiplexed sequencing reads to GEBVs and selected individuals via genomic selection in ReFUS population
 
 ## Step 1.  
 Get fastseq files transferred to a folder inside RedRep directory on Linux machine. Rename the .fastq files to fit pipeline.sh script:
