@@ -37,19 +37,26 @@ Step 4. Filter the raw SNPs to keep only the SNPs previously called on the train
 
 Step 5. Do initial QC checks of depth and missing call rates across individuals and across markers. To reduce heterozygosity call error, change homozygous calls with depth < 8 to missing. Homozygous calls with depth > 8 should have  
 
-# reads	p(Het mis-call)
-1		    1
-2		    0.5
-3		    0.25
-4	      0.125
-5		    0.0625
-6	      0.03125
-7		    0.015625
-8		    0.0078125
-9		    0.00390625
-10	    0.001953125
-11	    0.000976563
-12	    0.000488281
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+
+| # reads	| p(Het mis-call) | 
+| ------- |:---------------:| 
+| 1		    | 1               | 
+| 2		    | 0.5             | 
+| 3		    | 0.25            | 
+| 4	      | 0.125           | 
+| 5		    | 0.0625          | 
+| 6	      | 0.03125         |
+| 7		    | 0.015625        |
+| 8		    | 0.0078125       |
+| 9		    | 0.00390625      |
+| 10	    | 0.001953125     |
+| 11	    | 0.000976563     |
+| 12	    | 0.000488281     | 
 
 
 
