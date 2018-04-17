@@ -1,0 +1,307 @@
+ ASReml 4.1 [28 Dec 2014] Title: All_Exp16.
+   Build mg [03 May 2016]   64 bit  Windows x64
+ 16 Apr 2018 13:31:24.882   9216 Mbyte  ReFUSC3-C4_Gblup_Model11
+ Licensed to: North Carolina State University    30-nov-2018         
+ *****************************************************************
+ * Contact support@asreml.co.uk for licensing and support        *
+ *********************************************************** ARG *
+ Folder: Q:\My Drive\GS_ReFUS_files\Predictions_2018_C4
+ PROJECT  !A  !LL 20   !SORT
+ LOC_ID !I
+ env  !A
+ Year !I
+ row  !I
+ column !I
+ material  !A
+ source_id  !P !LL 20 !SORT
+ femrow  !A
+ seed_gen  !A
+ group !A
+ entry  !I
+ Plot_Fum  !I
+ planting_date  !I
+ Stand_Count  !I
+ EHT_1  !I
+ EHT_2  !I
+ EHT_3  !I
+ EHT_4  !I
+ EHT_5  !I
+ PHT_1  !I
+ PHT_2  !I
+ PHT_3  !I
+ PHT_4  !I
+ PHT_5  !I
+ anth_date  !I
+ silk_date  !I
+ Plate  !A
+ check_vs_exp !A
+ exp  !A
+ check !A
+ arcsRoot_ldg != Root_ldg !ARCSIN Stand_Count
+ arcsStalk_ldg != Stalk_ldg !ARCSIN Stand_Count
+ Ear_rot_1 !=  Ear_rot !+1
+ logear_rot != Ear_rot_1 !^0
+ fum_1 != Fumonisin_ppm  !+1
+ logfum != fum_1  !^0
+ "ReFusC3_C4_fake_ped.txt"  !ALPHA 
+ Reading pedigree file ReFusC3_C4_fake_ped.txt: skipping            0  lines
+     860 identities in the pedigree over 0 generations.
+       For first parent labelled Sire, second labelled  Dam
+     Sire Sire_of_Sire  Dam_of_Sire      Dam  Sire_of_Dam   Dam_of_Dam
+        0            0            0        0            0            0
+ Using an adapted version of  Meuwissen & Luo GSE 1992 305-313:
+ PEDIGREE [ReFusC3_C4_fake_ped.txt ] has      860 identities,     860 Non zero elements
+  
+  Reading ReFusC3_C4_K.grm skipping            0  header lines
+ Min Mean Max of diag(ReFusC3_C4_K.grm) is  0.689920       698.785       99999.0    
+          Average Covariance: -0.127809E-02;  5.2% of covariances are zero.
+ Min Mean Max of diag(inverse(ReFusC3_C4_K.grm)) is  0.100001E-04   2582.63       2702.74    
+          Average Covariance:   2505.94    ;  5.2% of covariances are zero.
+ Inverse G structure of     860 rows obtained by inverting matrix read from ReFusC3_C4_K.grm
+ GIV0  NRM              860       7        0.00
+ GIV1  ReFusC3_C4_K     860       9     -972.87
+ QUALIFIERS: !SKIP 1             !NODISPLAY 
+ QUALIFIERS: !ASUV !MAXITER 25 !CONTINUE    
+ QUALIFIER: !DOPART 11 is active
+ Reading Q:\My Drive\GS_ReFUS_files\Predictions_2017\All_Exp16_pheno.csv  FREE FORMAT skipping     1 lines
+
+ Bivariate analysis of logfum and logear_rot                                      
+ Summary of 3392 records retained of 3392 read
+
+  Model term          Size #miss #zero   MinNon0    Mean      MaxNon0  StndDevn
+   1 EXP_ID             17     0     0      3    14.1616         17
+   2 PROJECT             9     0     0      1     5.4348          9
+   3 LOC_ID              3     0     0      1     1.9944          3
+   4 env                 3     0     0      1     1.9944          3
+   5 Year                3     0     0      1     2.1468          3
+   6 PLOT              550     0     0      1   229.9971        550
+   7 row                52     0     0      1    14.7473         52
+   8 column             28     0     0      1     9.7084         28
+   9 rep                 2     0     0      1     1.3965          2
+  10 block              28     0     0      1    11.4832         28
+  11 material            3     0     0      1     1.1165          3
+  12 source_id   !P    860     0     0      1        331        860
+  13 femrow            294     0     0      1    80.3317        294
+  14 seed_gen            3     0     0      1     1.1165          3
+  15 group               3     0     0      1     1.0887          3
+  16 entry             269  1787     0      1   124.3938        269
+  17 Plot_Fum          550   616     0      1   241.2187        550
+  18 planting_date       2     0     0      1     1.0596          2
+  19 Stand_Count        25     2     0      1     7.4006         25
+  20 EHT_1              26    11     0      1     7.7782         26
+  21 EHT_2              27    14     0      1     8.2969         27
+  22 EHT_3              31    11     0      1     8.3685         31
+  23 EHT_4              28   619     0      1     8.0873         28
+  24 EHT_5              29   628     0      1     8.7601         29
+  25 EH_MNH                    9     0  28.30      80.22      143.8      18.50    
+  26 EH_MN                     9     0  30.00      81.74      144.0      18.52    
+  27 PHT_1              36    10     0      1    11.5840         36
+  28 PHT_2              38    10     0      1    11.2481         38
+  29 PHT_3              39    11     0      1    11.9317         39
+  30 PHT_4              38   620     0      1    11.3759         38
+  31 PHT_5              40   628     0      1    12.0141         40
+  32 PH_MNH                    9     0  86.40      169.6      257.3      26.49    
+  33 PH_MN                     9     0  87.00      170.7      258.0      26.53    
+  34 Ratio_PHEH                9     0 0.2914     0.4761     0.7012     0.5982E-01
+  35 anth_date           2  2251     0      1     1.8203          2
+  36 silk_date           2  2251     0      1     1.5574          2
+  37 dta                    2251     0  56.00      67.30      80.00      5.324    
+  38 dts                    2251     0  57.00      69.65      87.00      5.557    
+  39 asi                    2251   105 -6.000      2.351      9.000      1.695    
+  40 Root_ldg                  0  2841  1.000     0.5336      20.00      1.700    
+  41 Stalk_ldg                 0  2830  1.000     0.3555      12.00      1.106    
+  42 Erect_plants           1644     0 0.2000     0.9731      1.000     0.7128E-01
+  43 ER1                     387    78  1.000      25.98      100.0      27.19    
+  44 ER2                     387   106  1.000      23.82      100.0      25.69    
+  45 ER3                     395    95  1.000      23.94      100.0      26.12    
+  46 ER4                     403   104  1.000      24.20      100.0      26.42    
+  47 ER5                     417   120  1.000      24.47      100.0      26.13    
+  48 ER6                     434   117  1.000      24.57      100.0      26.07    
+  49 ER7                     475    94  1.000      25.32      100.0      26.96    
+  50 ER8                     576    93  1.000      25.71      100.0      27.16    
+  51 ER9                     842    84  1.000      27.20      100.0      28.19    
+  52 ER10                   1478    67  1.000      30.34      100.0      30.30    
+  53 ER11                   3260     7  1.000      21.61      100.0      24.37    
+  54 ER12                   3383     0  1.000      13.11      45.00      16.13    
+  55 Ear_rot                  12     1 0.8889      25.16      100.0      18.92    
+  56 yield_g                 553     0  51.00      846.9      1641.      269.5    
+  57 yield_plant              14     0  10.00      87.82      170.4      25.72    
+  58 ear_count                12     0  1.000      9.470      12.00      1.136    
+  59 Fumonisin_ppm            23     0 0.3000E-02  28.46      286.8      35.13    
+  60 test_weight            1824     0  88.30      133.7      153.7      8.449    
+  61 density                1824     0  504.6      764.2      878.3      48.28    
+  62 Plate              15  2248     0      1     7.8260         15
+  63 check_vs_exp        2     0     0      1     1.1138          2
+  64 exp               495     0     0      1   212.1902        495
+  65 check               8     0     0      1     1.4098          8
+  66 z                         0   386  1.000     0.8862      1.000     0.3176    
+  67 arcsRoot_ldg              2     0  5.739      18.02      80.90      15.21    
+  68 arcsStalk_ldg             2     0  5.739      17.01      80.90      12.93    
+  69 Ear_rot_1                12     0  1.000      26.16      101.0      18.92    
+  70 logear_rot     Variate   12     1 0.6360      3.018      4.615     0.7228    
+  71 fum_1                    23     0  1.003      29.46      287.8      35.13    
+  72 logfum         Variate   23     0 0.2996E-02  2.856      5.662      1.040    
+  73 Trait                       2
+  74 mu                          1
+  75 Year.env                    9  5 Year      :   3   4 env            :    3
+  76 Tr.Year.env                18 73 Trait     :   2  75 Year.env       :    9
+  77 mv_estimates               35
+  78 us(Tr)                      2
+  79 env.Year                    9  4 env       :   3   5 Year           :    3
+  80 rep.env.Year               18  9 rep       :   2  79 env.Year       :    9
+  81 us(Tr).rep.env.Year        36 78 us(Tr)    :   2  80 rep.env.Year   :   18
+  82 block.rep.env.Year        504 10 block     :  28  80 rep.env.Year   :   18
+  83 us(Tr).block.rep.env.Year1008 78 us(Tr)    :   2  82 block.rep.env.Y:  504
+  84 grm(source_id)    860
+  85 us(Tr).grm(source_id)    1720 78 us(Tr)    :   2  84 grm(source_id) :  860
+ us(Tr) in sat(PROJECT,01).id(units).us(Tr) has size 2, parameters:  14  16
+  sat(PROJECT,01).id(units).us(Tr) [ 13: 16] initialized.
+ us(Tr) in sat(PROJECT,02).id(units).us(Tr) has size 2, parameters:  18  20
+  sat(PROJECT,02).id(units).us(Tr) [ 17: 20] initialized.
+ us(Tr) in sat(PROJECT,03).id(units).us(Tr) has size 2, parameters:  22  24
+  sat(PROJECT,03).id(units).us(Tr) [ 21: 24] initialized.
+ us(Tr) in sat(PROJECT,04).id(units).us(Tr) has size 2, parameters:  26  28
+  sat(PROJECT,04).id(units).us(Tr) [ 25: 28] initialized.
+ us(Tr) in sat(PROJECT,05).id(units).us(Tr) has size 2, parameters:  30  32
+  sat(PROJECT,05).id(units).us(Tr) [ 29: 32] initialized.
+ us(Tr) in sat(PROJECT,06).id(units).us(Tr) has size 2, parameters:  34  36
+  sat(PROJECT,06).id(units).us(Tr) [ 33: 36] initialized.
+ us(Tr) in sat(PROJECT,07).id(units).us(Tr) has size 2, parameters:  38  40
+  sat(PROJECT,07).id(units).us(Tr) [ 37: 40] initialized.
+ us(Tr) in sat(PROJECT,08).id(units).us(Tr) has size 2, parameters:  42  44
+  sat(PROJECT,08).id(units).us(Tr) [ 41: 44] initialized.
+ us(Tr) in sat(PROJECT,09).id(units).us(Tr) has size 2, parameters:  46  48
+  sat(PROJECT,09).id(units).us(Tr) [ 45: 48] initialized.
+ Sorting Section  1:    389 rows by   2 columns
+ Sorting Section  2:    385 rows by   2 columns
+ Sorting Section  3:    370 rows by   2 columns
+ Sorting Section  4:    202 rows by   2 columns
+ Sorting Section  5:    202 rows by   2 columns
+ Sorting Section  6:    202 rows by   2 columns
+ Sorting Section  7:    550 rows by   2 columns
+ Sorting Section  8:    542 rows by   2 columns
+ Sorting Section  9:    550 rows by   2 columns
+ us(Tr) in us(Tr).rep.env.Year has size 2, parameters:  49  51
+  us(Tr).rep.env.Year              [49:51] initialized.
+ us(Tr) in us(Tr).block.rep.env.Year has size 2, parameters:  52  54
+  us(Tr).block.rep.env.Year        [52:54] initialized.
+ us(Tr) in us(Tr).grm(source_id) has size 2, parameters:  55  57
+  us(Tr).grm(source_id)            [55:57] initialized.
+ Forming     2820 equations:  21 dense.
+ Initial updates will be shrunk by factor    0.300
+ Notice: ReStartValues taken from ReFUSC3-C4_Gblup_Model11.rsv
+
+  Notice: Embedded blanks in data fields are converted to UNDERSCORE
+ Notice: 3 singularities detected in design matrix.
+   1 LogL= 417.339     S2=  1.0000       6731 df 
+   2 LogL= 431.253     S2=  1.0000       6731 df 
+   3 LogL= 443.132     S2=  1.0000       6731 df 
+   4 LogL= 446.901     S2=  1.0000       6731 df 
+   5 LogL= 447.319     S2=  1.0000       6731 df 
+   6 LogL= 447.321     S2=  1.0000       6731 df 
+   7 LogL= 447.321     S2=  1.0000       6731 df 
+
+          - - - Results from analysis of logfum logear_rot - - -
+ Akaike Information Criterion     -822.64 (assuming 36 parameters).
+ Bayesian Information Criterion   -577.32
+
+ Model_Term                             Sigma         Sigma   Sigma/SE   % C
+ sat(PROJECT,01).id(units).us(Tr)         778 effects
+ Tr                      US_V  1  1  0.507098      0.507098      12.62   0 P
+ Tr                      US_C  2  1  0.567514E-01  0.567514E-01   2.90   0 P
+ Tr                      US_V  2  2  0.235349      0.235349      12.82   0 P
+ sat(PROJECT,02).id(units).us(Tr)         770 effects
+ Tr                      US_V  1  1  0.484443      0.484443      12.36   0 P
+ Tr                      US_C  2  1  0.469140E-01  0.469140E-01   2.98   0 P
+ Tr                      US_V  2  2  0.146649      0.146649      12.15   0 P
+ sat(PROJECT,03).id(units).us(Tr)         740 effects
+ Tr                      US_V  1  1  0.496803      0.496803      12.18   0 P
+ Tr                      US_C  2  1  0.358131E-01  0.358131E-01   1.86   0 P
+ Tr                      US_V  2  2  0.216043      0.216043      12.32   0 P
+ sat(PROJECT,04).id(units).us(Tr)         404 effects
+ Tr                      US_V  1  1  0.480899      0.480899       9.15   0 P
+ Tr                      US_C  2  1  0.832634E-01  0.832634E-01   5.36   0 P
+ Tr                      US_V  2  2  0.633225E-01  0.633225E-01   8.32   0 P
+ sat(PROJECT,05).id(units).us(Tr)         404 effects
+ Tr                      US_V  1  1  0.870268      0.870268       9.43   0 P
+ Tr                      US_C  2  1  0.160541      0.160541       5.61   0 P
+ Tr                      US_V  2  2  0.130423      0.130423       8.96   0 P
+ sat(PROJECT,06).id(units).us(Tr)         404 effects
+ Tr                      US_V  1  1  0.301529      0.301529       8.68   0 P
+ Tr                      US_C  2  1  0.522626E-01  0.522626E-01   3.77   0 P
+ Tr                      US_V  2  2  0.874102E-01  0.874102E-01   8.72   0 P
+ sat(PROJECT,07).id(units).us(Tr)        1100 effects
+ Tr                      US_V  1  1  0.372112      0.372112      14.76   0 P
+ Tr                      US_C  2  1  0.162179      0.162179       9.40   0 P
+ Tr                      US_V  2  2  0.289820      0.289820      15.27   0 P
+ sat(PROJECT,08).id(units).us(Tr)        1084 effects
+ Tr                      US_V  1  1  0.283522      0.283522      14.32   0 P
+ Tr                      US_C  2  1  0.108918      0.108918       8.94   0 P
+ Tr                      US_V  2  2  0.176802      0.176802      14.61   0 P
+ sat(PROJECT,09).id(units).us(Tr)        1100 effects
+ Tr                      US_V  1  1  0.367636      0.367636      14.60   0 P
+ Tr                      US_C  2  1  0.177993      0.177993       9.88   0 P
+ Tr                      US_V  2  2  0.304346      0.304346      15.10   0 P
+ us(Tr).rep.env.Year             36 effects
+ Tr                      US_V  1  1  0.495649E-01  0.495649E-01   1.90   0 P
+ Tr                      US_C  2  1  0.317405E-02  0.317405E-02   0.32   0 P
+ Tr                      US_V  2  2  0.143971E-01  0.143971E-01   1.89   0 P
+ us(Tr).block.rep.env.Year     1008 effects
+ Tr                      US_V  1  1  0.774098E-02  0.774098E-02   2.13   0 P
+ Tr                      US_C  2  1 -0.339468E-02 -0.339468E-02  -1.83   0 P
+ Tr                      US_V  2  2  0.621587E-02  0.621587E-02   3.36   0 P
+ us(Tr).grm(source_id)         1720 effects
+ Tr                      US_V  1  1  0.456663      0.456663       9.98   0 P
+ Tr                      US_C  2  1  0.202402      0.202402       8.34   0 P
+ Tr                      US_V  2  2  0.164655      0.164655       9.15   0 P
+ grm(source_id)         ReFu    860
+ Covariance/Variance/Correlation Matrix US Residual
+  0.5071      0.1643    
+  0.5675E-01  0.2353    
+ Covariance/Variance/Correlation Matrix US Residual
+  0.4844      0.1760    
+  0.4691E-01  0.1466    
+ Covariance/Variance/Correlation Matrix US Residual
+  0.4968      0.1093    
+  0.3581E-01  0.2160    
+ Covariance/Variance/Correlation Matrix US Residual
+  0.4809      0.4771    
+  0.8326E-01  0.6332E-01
+ Covariance/Variance/Correlation Matrix US Residual
+  0.8703      0.4765    
+  0.1605      0.1304    
+ Covariance/Variance/Correlation Matrix US Residual
+  0.3015      0.3219    
+  0.5226E-01  0.8741E-01
+ Covariance/Variance/Correlation Matrix US Residual
+  0.3721      0.4938    
+  0.1622      0.2898    
+ Covariance/Variance/Correlation Matrix US Residual
+  0.2835      0.4865    
+  0.1089      0.1768    
+ Covariance/Variance/Correlation Matrix US Residual
+  0.3676      0.5321    
+  0.1780      0.3043    
+ Covariance/Variance/Correlation Matrix US us(Tr).rep.env.Year
+  0.4956E-01  0.1188    
+  0.3174E-02  0.1440E-01
+ Covariance/Variance/Correlation Matrix US us(Tr).block.rep.env
+  0.7741E-02 -0.4894    
+ -0.3395E-02  0.6216E-02
+ Covariance/Variance/Correlation Matrix US us(Tr).grm(source_id
+  0.4567      0.7381    
+  0.2024      0.1647    
+
+                                   Wald F statistics
+     Source of Variation           NumDF              F-inc  
+  74 mu                                1            3115.74                 
+  73 Trait                             1              21.29                 
+  76 Tr.Year.env                      16              10.98                 
+  77 mv_estimates                         35 effects fitted
+  81 us(Tr).rep.env.Year                  36 effects fitted
+  83 us(Tr).block.rep.env.Year          1008 effects fitted (     562 are zero)
+  85 us(Tr).grm(source_id)              1720 effects fitted (       1 are zero)
+           1  possible outliers: see .res file
+           1  possible outliers: see .res file
+           1  possible outliers: see .res file
+ Finished: 16 Apr 2018 13:33:47.583   LogL Converged

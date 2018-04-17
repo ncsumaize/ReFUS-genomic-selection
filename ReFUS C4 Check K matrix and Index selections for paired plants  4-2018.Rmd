@@ -1,0 +1,364 @@
+---
+title: "ReFUS C4 GBS K matrix and Index selection for paired plants"
+author: "jim"
+date: "April 14, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(synbreed)
+library(ggplot2)
+library(kofnGA) #genetic algorithm
+library(dplyr)
+library(tidyr)
+```
+
+Set working directory get libraries and import kinship matrix from tassel
+
+```{r}
+setwd("Q:/My Drive/GS_ReFUS_files/Predictions_2018_C4")
+K = read.table("REFUSC3_4_join_imp_K.txt", stringsAsFactors = F, skip = 3)
+line_names = K[,1]
+K = as.matrix(K[,-1])
+class(K) = "relationshipMatrix"
+```
+
+Fix the 17FL line names, which are exported from GBS pipeline with index information attached
+```{r}
+line_names = sub('^i[0-9]{2}_17FL', '17FL', line_names)
+line_names = sub('_i[0-9]{2}$', '', line_names)
+dimnames(K) = list(line_names, line_names)
+```
+
+
+Check the K elements overall
+```{r}
+summary(K)
+```
+Separate the training and current data sets and check diagonal and off-diagonal elements of each
+```{r}
+train_index = grepl('1[25][FC]L', line_names)
+new_index = grepl('17FL', line_names)
+train_diag = diag(K[train_index, train_index])
+summary(unclass(train_diag))
+```
+Summarize diagonal elements of new samples
+```{r}
+new_diag = diag(K[new_index, new_index])
+summary(unclass(new_diag))
+```
+
+Compare the distribution of diagonal elements for the two sets
+```{r}
+Khistdf = data.frame(set = 'Train', diagK = unclass(train_diag))
+Khistdf = rbind(Khistdf, data.frame(set = 'New', diagK = unclass(new_diag)))
+
+
+histK = ggplot(Khistdf, aes(x = diagK)) + geom_freqpoly(aes(colour = set))
+histK
+```
+The training set is based on S0:1 lines, so mean diagonal element is ~1.0. New data are individual S0 plants, so diagonal elements should also be around 1.0, but they are higher. I think this is because the new samples are from crosses among a small subset of individuals of the training, so this is drift leading to increased inbreeding in the new population relative to the original population.
+
+
+Check how the new individuals are related to the original population according to marker profiles
+```{r}
+Kdist = 2 - K
+diag(Kdist) = 0
+mds = cmdscale(Kdist, k = 2, eig = T)
+
+mds_df = data.frame(mds$points)
+colnames(mds_df) = c("Dimension_1", "Dimension_2")
+mds_df$line = line_names
+mds_df$set = "Train"
+mds_df[new_index,"set"] = "New"
+```
+
+Make a vector of the selected training S0:1 lines
+```{r}
+selected = c("12FL0006-3", 
+"12FL0012-7", 
+"12FL0022-5", 
+"15CL1032-12", 
+"15CL1029-7", 
+"12FL0002-6", 
+"12FL0005-2", 
+"15CL1030-3", 
+"15CL1023-5", 
+"15CL1039-15", 
+"15CL1030-17", 
+"15CL1027-13", 
+"15CL1039-11", 
+"15CL1009-17", 
+"12FL0003-5", 
+"12FL0007-2", 
+"12FL0011-4", 
+"12FL0024-14", 
+"15CL1040-1", 
+"15CL1040-17")
+
+mds_df$selected = mds_df$line %in% selected
+```
+
+
+Plot the two sets via MDS
+```{r}
+mds_plot = ggplot(mds_df, aes(x = Dimension_1, y = Dimension_2)) + 
+  geom_point(aes(colour = set)) +
+  geom_point(data = mds_df[mds_df$selected,], colour = 'black') +
+  ggtitle("MDS plot of marker data from ReFUS C3 training lines and new C4 individuals")
+
+mds_plot
+```
+Wow, selection in the last generation pushed the population strongly in the direction of the selected individuals.
+
+Get the list of paired crosses that were made in 17FL winter nursery.
+```{r}
+pairs17FL = read.csv("Q:/My Drive/GS_ReFUS_files/Predictions_2018_C4/ReFUSC4_17FL_crosses.csv", stringsAsFactors = F)
+```
+
+Get the Gblups for ear rot and fumonisin from multivariate GBLUP model ('model 11')
+```{r}
+preds = read.table("Q:/My Drive/GS_ReFUS_files/Predictions_2018_C4/ReFUSC3-C4_Gblup_Model11.pvs", fill = T, stringsAsFactors = FALSE)
+```
+
+This is a mess, have to find which row starts the info we really want.
+```{r}
+header_index = which(preds[,1] == 'source_id')
+footer_index = which(preds[,1] == 'SED:')
+```
+
+Extract the rows we want
+```{r}
+pred_values = preds[(header_index+1):(footer_index-1),]
+colnames(pred_values) = unname(unlist(preds[header_index,]))
+pred_values$Predicted_Value = as.numeric(pred_values$Predicted_Value)
+pred_values$Standard_Error = as.numeric(pred_values$Standard_Error)
+pred_values = pred_values[,c(1:5)] #get rid of extra columns with '' name, this messes up tidyr later
+```
+
+Extract the predictions from the '17FL' samples. Spread the data frame to make two columns of predictions.(tidyr::spread is failing, I don't know why)
+```{r}
+pred_values = select(pred_values, source_id, Trait, Predicted_Value) 
+Gblups = spread(pred_values, key = Trait, value = Predicted_Value) #fails
+
+gblupsC4 = Gblups[grepl("^17FL", Gblups$source_id),]
+
+gblupsC4$rot_blup_scaled = scale(gblupsC4$logear_rot)
+gblupsC4$fum_blup_scaled = scale(gblupsC4$logfum)
+
+gblupsC4$index = gblupsC4$rot_blup_scaled + gblupsC4$fum_blup_scaled
+gblupsC4[order(gblupsC4$index),][1:30,]
+```
+Now compute the selection index value for each pair of individuals (mean of their individual selection indices) in the new set (17FL C4 plants)
+```{r}
+Pair_GEBVs = merge(pairs17FL, gblupsC4, by.x = "Mother", by.y = "source_id", all.x = T)
+#update the blup values to indicate they correspond to Mother plant
+colnames(Pair_GEBVs)[7:11] = paste0(colnames(Pair_GEBVs)[7:11], "_Mom") 
+
+#Now merge with father blups
+Pair_GEBVs = merge(Pair_GEBVs, gblupsC4, by.x = "Father", by.y = "source_id", all.x = T)
+colnames(Pair_GEBVs)[12:16] = paste0(colnames(Pair_GEBVs)[12:16], "_Dad") 
+```
+We compute a selection index that is the sum of the standardized blup for ear rot + standardized blup for fumonisin for each individual parent. Then we compute a breeding value for each pair (cross) as the average of the two parental blups.
+
+We have a lot of pairs that have data on only one parent. The GEBV for such pairs is just the GEBV for the known parent. But we don't have any information on relatedness of those pairs to each other or to other plants in the population, so they are not informative for computing effect on inbreeding coefficient.
+
+I think the best we can do is to assume they have zero relationships and go on. But we should penalize the progeny BLUPs due to the fact that only one parent is predicted.
+
+See Mrode p. 6 - 7 for prediction of individual with one vs. two parent's data. beta (selection weight) is Cov(trueBV, y)/Var(y) . Here y is actually a gblup for one parent or mean of two parental gblups
+
+Cov(trueBV,y) is the same for y = one parental BV vs y = mean of two parental BVs
+But Var(y) for one parent is sqrt(2)*Var(y mean) for mean of two parental BVs. So, we should penalize the predictions based on one parent only by multiplying the GBLUP by 1/sqrt(2)
+```{r}
+
+Pair_GEBVs$pair_index = rowMeans(Pair_GEBVs[, c("index_Mom", "index_Dad")], na.rm = T)
+#create a Boolean that indicates if we have data on both parents
+Pair_GEBVs$both_data = (! is.na(Pair_GEBVs$index_Mom) & ! is.na(Pair_GEBVs$index_Dad))
+
+#total number of pairs harvested
+print(paste ("Total pairs harvested: ", nrow(Pair_GEBVs)))
+
+#total number of pairs with data on both parents
+print(paste ("Pairs with data on both parents: ", sum(Pair_GEBVs$both_data)))
+
+#number of pairs with data on only one parent
+print(paste ("Pairs with data on only one parent: ", (nrow(Pair_GEBVs) - sum(Pair_GEBVs$both_data) - sum(is.na(Pair_GEBVs$pair_index)))))
+
+Pair_GEBVs$pair_index_adj = ifelse(Pair_GEBVs$both_data, Pair_GEBVs$pair_index, Pair_GEBVs$pair_index/sqrt(2))
+head(Pair_GEBVs)
+```
+Code to compute reliabilities:
+#genetic variance of log ear rot from model 11 
+Vgr = 0.328141
+#genetic variance of fum from model 11 
+Vgf = 0.976110
+Pair_GEBVs$rot_reliab = sqrt(1 - (Pair_GEBVs$logear_rot_SEP/(1.5*Vgr)))
+Pair_GEBVs$fum_reliab = sqrt(1 - (Pair_GEBVs$fum_SEP/(1.5*Vgf)))
+
+
+OK, now the hard part! Let's first check the genomic relationship between each pair and exclude any pairs with Kij > 0.15 (0.25 is half sib relationship)
+```{r}
+pairwise_rel = function(row){
+  #print(str(row))
+  Mom = row['Mother']
+  Dad = row['Father']
+  #print(K[unclass(Mom), unclass(Dad)])
+  if (Mom %in% rownames(K) & Dad %in% rownames(K)) {
+    #return(K[unclass(Mom), unclass(Dad)])} else return(NA)
+    return(K[Mom, Dad])} else return(NA)
+}
+
+#testing
+#print(K["17FL0133-1", "17FL0133-4"])
+#print(pairwise_rel(Pair_GEBVs[1,]))
+#print(K["17CL0185-7", "17CL0185-14"])
+#print(pairwise_rel(Pair_GEBVs[2,]))
+
+#apply it
+Pair_GEBVs$K = apply(Pair_GEBVs,1,FUN = pairwise_rel)
+hist(Pair_GEBVs$K)
+summary(Pair_GEBVs$K)
+
+#Any pairs with no known K value will be assigned K = 0
+Pair_GEBVs[is.na(Pair_GEBVs$K), "K"] = 0
+
+#How many will be excluded with K = 0.15 threshold?
+print(nrow(Pair_GEBVs[!is.na(Pair_GEBVs$K) & Pair_GEBVs$K > 0.15,]))
+```
+34 pairs will be excluded because of close relationships. 
+Also remove pairs with no BV to include only eligible candidates
+```{r}
+eligible_pairs = Pair_GEBVs[Pair_GEBVs$K < 0.15 & ! is.na(Pair_GEBVs$pair_index_adj),]
+```
+
+Now let's make a new K matrix that includes only 17FL plants and excludes pairs with close relationships. Use that to evaluate 'optimal contribution'.
+```{r}
+Knew = K[new_index, new_index]
+Newnames = unique(c(eligible_pairs$Mother, eligible_pairs$Father))
+keepers = rownames(Knew) %in% Newnames
+Knew2 = Knew[keepers, keepers]
+print(str(K))
+print(str(Knew))
+print(str(Knew2)) #this is smaller because we have individuals in Knew that did not make seed
+```
+Now add the additional 17FL individuals, assuming they have 0 relationship with the others
+Add the extra names to the relationship matrix
+```{r}
+Knew3 = diag(1.5, nrow = length(Newnames), ncol = length(Newnames))
+rownames(Knew3) = Newnames
+colnames(Knew3) = Newnames
+Knew3[rownames(Knew2), rownames(Knew2)] = Knew2
+str(Knew3)
+```
+
+#check that all the individuals in eligible pairs are also in Knew3 and vice versa
+```{r}
+identical(sort(Newnames), sort(rownames(Knew3))) #True
+identical(sort(unique(c(eligible_pairs$Father, eligible_pairs$Mother))), sort(rownames(Knew3)))
+identical(sort(Newnames), sort(rownames(Knew3)))
+
+#paranoid double checking
+all(eligible_pairs$Father %in% rownames(Knew3))
+all(eligible_pairs$Mother %in% rownames(Knew3))
+all(rownames(Knew3) %in% c(eligible_pairs$Father, eligible_pairs$Mother))
+```
+
+Now make a function that computes the average breeding value and average inbreeding coefficient for a set of individuals sampled from the new population
+```{r}
+contribution = function(df, Kmat, selected_names){
+  #df is a data frame like Pair_GEBVs or eligible_pairs that includes columns named:
+  #Father
+  #Mother
+  #seed_ID
+  #pair_index_adj
+  #K is a relationship matrix with rownames including the set of Father, Mother names in the df
+  #selected_names is a vector that includes a subset of seed_ID names
+  
+  #print(str(df))
+  #print(str(Kmat))
+  #print("inside contribution(), selected_names = ")
+  #print(str(selected_names))
+  #print("selected index value:")
+  #print(df[df$seed_ID %in% selected_names, "pair_index_adj"])
+  
+  mean_BV = mean(df[df$seed_ID %in% selected_names, "pair_index_adj"])
+  Kindexer = rownames(Kmat) %in% df[df$seed_ID %in% selected_names,"Mother"] | rownames(Kmat) %in% df[df$seed_ID %in% selected_names,"Father"]
+ 
+  #genetic contribution of each line assumed equal = 1/N
+  Kindexer = Kindexer/sum(Kindexer)
+  inbreeding = t(Kindexer)%*%Kmat%*%Kindexer/2
+  #print(list(mean_BV, inbreeding))
+  return(list(mean_BV, inbreeding))
+
+}
+
+#testing
+tryit = contribution(eligible_pairs, Knew3, eligible_pairs[order(eligible_pairs$pair_index_adj), "seed_ID"][1:25])
+print(tryit)
+```
+
+Make the objective function for use in kofnGA, objective function is MINIMIZED by best subset
+
+Here since we want LOWER blups for rot and fumonisin, the mean blup index is a good criterion. But to restrict inbreeding, we will add a large number if inbreeding exceeds some criterion.
+
+```{r}
+OC_obj_fun = function(v, df, Kmat, maxInbr){
+  selected_names = eligible_pairs[v, "seed_ID"] #select a subset of possible pairs
+  #print(selected_names)
+  BV_inbr = contribution(df, Kmat, selected_names)
+  #print(BV_inbr)
+  if (BV_inbr[[2]] > maxInbr){
+    return(10000)} else return(BV_inbr[[1]])
+}
+
+tryOC = OC_obj_fun(1:10, eligible_pairs, Knew3, 0.05)
+tryOC = OC_obj_fun(142:143, eligible_pairs, Knew3, 0.05)
+
+print(tryOC)
+```
+
+Now implement the genetic algorithm for optimal subset search
+```{r}
+GA_05 = kofnGA(n = length(eligible_pairs$seed_ID), k = 10, OF = OC_obj_fun, ngen = 500, df = eligible_pairs, Kmat = Knew3, maxInbr = 0.05)
+```
+Get the summary
+```{r}
+summary(GA_05)
+```
+```{r}
+plot(GA_05)
+```
+Get the vector of selected names - NOTE these are just the names of one of the two parents of each pair! Need to get the other parental names
+```{r}
+selected_crosses = eligible_pairs$seed_ID[GA_05$bestsol] #names of 10 selected crosses
+selected_pairs = eligible_pairs[eligible_pairs$seed_ID %in% selected_crosses,]
+write.csv(selected_pairs , file = "ReFUS_GS_C4 selected pairs.csv", row.names = F)
+print(selected_crosses)
+print(selected_pairs)
+```
+
+Now compare selected vs. whole population and vs. 10 best pairs selected for breeding value only in terms of breeding value and inbreeding coefficient
+```{r}
+TenBestBV = eligible_pairs[order(eligible_pairs$pair_index_adj), ][1:10,]
+print(TenBestBV)
+```
+Compare mean breeding values and inbreeding of whole population, set selected for optimal contribution, and set selected as best breeding values
+```{r}
+print("Breeding value and Expected Inbreeding of whole population")
+print(contribution(eligible_pairs, Knew3, eligible_pairs$seed_ID))
+print("Breeding value and Expected Inbreeding of pairs selected for optimal contribution")
+print(contribution(eligible_pairs, Knew3, selected_pairs$seed_ID))
+print("Breeding value and Expected Inbreeding of pairs selected for breeding value only")
+print(contribution(eligible_pairs, Knew3, TenBestBV$seed_ID))
+
+```
+Finally, plot the selected individuals on the MDS plot
+
+```{r}
+mds2 = mds_df[mds_df$line %in% c(selected_pairs$Mother, selected_pairs$Father),]
+
+mds_plot + geom_point(data = mds2, colour = 'purple', shape = 21, size = 5)
+
+```
+

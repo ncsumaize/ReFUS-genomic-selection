@@ -1,0 +1,141 @@
+---
+title: "Make Grm for asreml"
+author: "jim"
+date: "April 14, 2018"
+output: html_document
+---
+R script to read in the relationship matrix for training data and current cycle individuals for ReFUS population.
+Check rank, force to positive definite if required.
+Fix line names.
+Add in extra rows and columns for 'fixed' check varieties and other lines in phenotype data set but not in GRM.
+Export the sorted line names that match matrix order as ped file and sorted augmented GRM file.
+These can then be read by ASReml to fit the GBLUP model.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(synbreed)
+library(Matrix)
+```
+
+Set working directory get libraries and import kinship matrix from tassel
+
+```{r}
+setwd("Q:/My Drive/GS_ReFUS_files/Predictions_2018_C4")
+K = read.table("REFUSC3_4_join_imp_K.txt", stringsAsFactors = F, skip = 3)
+line_names = K[,1]
+K = as.matrix(K[,-1])
+```
+
+Fix the 17FL line names, which are exported from GBS pipeline with index information attached
+```{r}
+line_names = sub('^i[0-9]{2}_17FL', '17FL', line_names)
+line_names = sub('_i[0-9]{2}$', '', line_names)
+```
+
+
+Check rank of matrix via synbreed:
+```{r}
+G = K
+class(G) = "relationshipMatrix"
+dimnames(G) = list(line_names, line_names)
+summary(G)
+```
+Cool, it is full rank!
+
+Check also with Matrix package
+```{r}
+rankMatrix(K, tol = 10E-8,
+           method = "tolNorm2")
+```
+
+looks like it's close to singular for one column, matrix is rank 836 with this tolerance  
+actual tolerance of ASReml is 10E-10*(TotalSS_uncorrected)  
+so this is probably OK for most traits.  
+  
+Correcting singularity at the relationship matrix - skip for now
+```{r}
+#RealizedPD = nearPD(K, keepDiag = T)
+#G = matrix(RealizedPD[[1]]@x, nrow = RealizedPD[[1]]@Dim[1])
+#G = G + diag(0.01, nrow(G))
+#attr(G, "dimnames") = RealizedPD[[1]]@Dimnames
+```
+
+Create a fake ped file, need to add the two check lines in the experiment and also the lines in the pheno file that we did not get genotype data on
+```{r}
+ped = data.frame(line = line_names, mom = 0, dad = 0, stringsAsFactors = F)
+phenos = read.csv("Q:/My Drive/GS_ReFUS_files/Predictions_2017/All_Exp16_pheno.csv", stringsAsFactors = F)
+pheno_lines = unique(phenos$source_id)
+extras = sort(setdiff(pheno_lines, line_names))
+extradf = data.frame(line = extras, mom = 0, dad = 0)
+ped2 = rbind(ped, extradf)
+str(ped2)
+```
+
+
+Now we need to augment the relationship matrix to include these extra lines.  
+We assume that the un-genotyped lines have F = 0 and covariances = 0 relative to other lines. So, diagonal elements = 1, off-diags = 0
+
+For the checks, we give them diagonal values of some large number so they don't influence the variance component estimate. Say diagonal = 99999, off-diag = 0
+Checks present on the training set: FR1064, FR615, GEMS0002, M141A and NC358
+
+```{r}
+N = dim(G)[1] #number of lines in original K
+Nx = length(extras) #number of extra lines
+Nchecks = 5 #number of checks
+Nt = N + Nx #(total number of lines in augmented K)
+Kaug = matrix(data = 0, nrow = Nt, ncol = Nt)
+Kaug[1:N, 1:N] = G #fill in first N rows and columns with real data
+diag(Kaug[(N+1):Nt, (N+1):Nt]) = 1
+diag(Kaug[(Nt-Nchecks):Nt, (Nt-Nchecks):Nt]) = 99999
+dim(Kaug)
+str(Kaug)
+
+```
+
+Convert the K matrix to a sparse form. This takes a while.
+```{r}
+Nelem = N + ((Nt*(Nt-1))/2) #number of elements is num diag + num off-diag on HALF the matrix
+Ksparse = data.frame(r = rep(NA, Nelem), c= rep(NA, Nelem), val = rep(NA, Nelem))
+Index = 1
+for (i in 1:Nt){
+  for (j in i:Nt){
+    Ksparse[Index,] = c(j, i, Kaug[i,j])
+    Index = Index + 1
+  }
+}   
+Ksparse = Ksparse[order(Ksparse[,1], Ksparse[,2]),]
+```
+
+Write the files out for asreml to use
+```{r}
+write.table(ped2, file = "ReFusC3_C4_fake_ped.txt", quote = F, row.names = F, col.names = F)
+
+name_vector = ped2[,"line", drop = F]
+write.table(name_vector, file = "ReFUSC3_C4_K_line_order.txt", quote = F, row.names = F, col.names = F)
+
+write.table(Ksparse, file = "ReFusC3_C4_K.grm", quote = F, row.names=F, col.names = F)
+```
+
+Quick check on the K matrix diagonals
+```{r}
+Kmat = as.matrix(K)
+summary(diag(Kmat))
+hist(diag(Kmat))
+```
+
+Check the off-diagonals
+```{r}
+Npairs = (N*(N-1))/2
+Koff = vector(length = Npairs)
+index = 1
+
+for (i in (1:(N-1))){
+  for (j in (i+1):N){
+  Koff[index] = K[i,j]
+  index = index + 1
+}}
+
+summary(Koff)
+hist(Koff)
+```
+
