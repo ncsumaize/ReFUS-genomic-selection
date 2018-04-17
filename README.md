@@ -3,7 +3,7 @@
 
 ## Step 1.  
 Get fastseq files transferred to a folder inside RedRep directory on Linux machine. Rename the .fastq files to fit pipeline.sh script:
-filename = data<lib>_<index>.fastq | meta<lib>_<index>.txt
+<pre>filename = data<lib>_<index>.fastq | meta<lib>_<index>.txt<\pre>
 
 Example: data1-2.fastq
 
