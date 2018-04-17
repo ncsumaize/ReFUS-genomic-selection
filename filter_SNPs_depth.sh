@@ -8,7 +8,7 @@ cd ~/RedRep/ReFUS
 vcftools --gzvcf ~/RedRep/ReFUS/REFUSC4.subset.SNP.vcf.gz --out REFUSC4sub --geno-depth
 
 #output the genotype calls for analysis - these are in format 0/0, 0/1, 1/1, not sure how to get 0,1,2 format
-#vcftools --gzvcf ~/RedRep/ReFUS/REFUSC4.subset.SNP.vcf.gz --out REFUSC4sub --extract-FORMAT-info GT
+vcftools --gzvcf ~/RedRep/ReFUS/REFUSC4.subset.SNP.vcf.gz --out REFUSC4sub --extract-FORMAT-info GT
 
 #output the sequence quality for analysis:
 vcftools --gzvcf ~/RedRep/ReFUS/REFUSC4.subset.SNP.vcf.gz --out REFUSC4sub --get-INFO GC
