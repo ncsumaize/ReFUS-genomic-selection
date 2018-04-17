@@ -35,7 +35,7 @@ Step 4. Filter the raw SNPs to keep only the SNPs previously called on the train
 
 [Bash script to check depth and missing data rates](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/filter_SNPs_depth.sh)
 
-Step 5. Do initial QC checks of depth and missing call rates across individuals and across markers. To reduce heterozygosity call error, change homozygous calls with depth < 8 to missing. Homozygous calls with depth > 8 should have  
+Step 5. [Do initial QC checks of depth and missing call rates across individuals and across markers](). To reduce heterozygosity call error, change homozygous calls with depth < 8 to missing. Homozygous calls with depth >= 8 should have only around 1% chance of het mis-call, the error rate gets much higher for lower depth calls.  
 
 | # reads	| p(Het mis-call) | 
 | ------- |:----------------| 
@@ -51,6 +51,11 @@ Step 5. Do initial QC checks of depth and missing call rates across individuals 
 | 10	    | 0.001953125     |
 | 11	    | 0.000976563     |
 | 12	    | 0.000488281     | 
+
+Remove SNPs with mean depth > 120 (likely paralogs with multiple areas of alignment) and SNPs with > 50% missing call rate. After filtering SNPs, then remove individuals with > 60% missing data. Then write out two flat files with the names of SNPs and individuals to keep in final data set (REFUSC4_SNPs_in_final_set.txt and REFUSC4_indv_in_final_set.txt). We will use these files in next step.  
+
+Step 6. 
+
 
 
 
