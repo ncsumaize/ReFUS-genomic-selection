@@ -23,6 +23,8 @@ for i in {1..2}
 	echo $PWD
         #subset the current SNP set to include only those that are also included in training set
 	#check if the vcf is already bgzipped or not
+	#NOTE SOMEHOW THIS FAILED INSIDE SOME BUT NOT ALL DIRECTORIES, A PARTIAL GZ FILE WAS MADE AND WE LOST A HUGE NUMBER OF SNPS
+	#CHECK THE out.log file in each director to see if it worked ok
 	if [ ! -f combined.SNP.vcf.gz ]
 		then
 		bgzip combined.SNP.vcf
