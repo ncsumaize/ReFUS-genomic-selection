@@ -100,7 +100,7 @@ Open joined HapMap file with both training and C4 individuals in TASSEL.
 ## Step 13.  
 [R script to QC relationship matrix and select optimal subset of crosses with optimal contribution method and index selection](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/ReFUS%20C4%20Check%20K%20matrix%20and%20Index%20selections%20for%20paired%20plants%20%204-2018.Rmd). There are some tricky issues here, mostly due to some individuals were removed from genotype set because of high missing data rates. However, we crossed individuals in winter nursery BEFORE we had genotype data. So, we have many paired crosses which involve one parent lacking genotype data. This is frustrating but we have to deal with it as best we can. The approach here is to give each ungenotyped parent a breeding value of zero, then also do an extra shrinkage on the breeding value of the paired cross it was used in. We also have to assume zero covariance of those individuals with other parents, which greatly reduces the effectiveness of our optimal contribution approach, but we don't have any choice. Finally, we use a genetic algorithm to pick the optimal set of ten crosses (from 20 individuals) to use to create the next generation.
 
-[Knitted R markdown of genomic selection script](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/ReFUS_C4_Check_K_matrix_and_Index_selections_for_paired_plants__4-2018.html)
+[Knitted R markdown of genomic selection script](http://htmlpreview.github.io/?https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/ReFUS_C4_Check_K_matrix_and_Index_selections_for_paired_plants__4-2018.html)
 
 
 
