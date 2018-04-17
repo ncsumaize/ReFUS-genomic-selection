@@ -75,6 +75,16 @@ Step 10. Open joined HapMap file with both training and C4 individuals in TASSEL
   Compute kinship matrix using centered IBS option, output matrix as REFUSC3_4_join_impK.txt
 
 
+Step 11. [R script to take in realized genomic relationship matrix and output in ASReml format with ped file]
+(https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/make%20ReFUS%20C3-C4%20Grm%20for%20asreml.Rmd).  
+
+Step 12. [ASReml script to fit multivariate GBLUP model](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/ReFUSC3-C4_Gblup_Model.as). Model part 11 is the multivariate GBLUP model we want for both fusarium ear rot and fumonisin content. This model fits the relationship matrix to model the covariances among lines and individuals, with heterogeneous error structures for each site. I had to remove the weighting by ear counts and the GxE term to obtain convergence (but GxE variance was very small).  
+
+[This generates a summary output file with covariance components estimates](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/ReFUSC3-C4_Gblup_Model11.asr).
+
+[This also generates a prediction file](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/ReFUSC3-C4_Gblup_Model11.pvs)
+
+Step 13. [R script to QC relationship matrix and select optimal subset of crosses with optimal contribution method and index selection](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/ReFUS%20C4%20Check%20K%20matrix%20and%20Index%20selections%20for%20paired%20plants%20%204-2018.Rmd). There are some tricky issues here, mostly due to some individuals were removed from genotype set because of high missing data rates. However, we crossed individuals in winter nursery BEFORE we had genotype data. So, we have many paired crosses which involve one parent lacking genotype data. This is frustrating but we have to deal with it as best we can. The approach here is to give each ungenotyped parent a breeding value of zero, then also do an extra shrinkage on the breeding value of the paired cross it was used in. We also have to assume zero covariance of those individuals with other parents, which greatly reduces the effectiveness of our optimal contribution approach, but we don't have any choice. Finally, we use a genetic algorithm to pick the optimal set of ten crosses (from 20 individuals) to use to create the next generation.
 
 
 
