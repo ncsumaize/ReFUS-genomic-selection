@@ -21,7 +21,7 @@ i10_17FL0107-12_i06	ReFUSC4_1	Josie_Bloom	3/20/2018	4/4/2018	RW-Lab	HiSeq2500	17
 
 [An example of a grid layout of DNA samples in 96-well plate format](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/ReFUS%20C4%20NGS%20Library%20plate%20layout.csv)
 
-[Here is a python script to generate metadata files based on grid layout file](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/Reformat plate layouts to metadata files for RedRep Abraham Library 2.py)  
+[Here is a python script to generate metadata files based on grid layout file](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/Reformat%20plate%20layouts%20to%20metadata%20files%20for%20RedRep%20Abraham%20Library%202.py)  
 
 ## Step 3.  
 Run the RedRep pipeline:
