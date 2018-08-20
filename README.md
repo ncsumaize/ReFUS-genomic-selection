@@ -69,7 +69,7 @@ vcftools --gzvcf ~/RedRep/ReFUS/REFUSC4.subset.SNP.vcf.gz --keep ReFUSC4_indv_in
 vcftools --vcf ~/RedRep/ReFUS/REFUSC4dropindvs.recode.vcf --positions ReFUSC4_SNPs_in_final_set.txt --out REFUSC4final --recode
 
 ## Step 7.  
-Open new vcf in TASSEL and export the data set as HapMap format: REFUSC4final.vcf
+Open new vcf in TASSEL and export the data set as HapMap format: REFUSC4final.hmp.txt
 
 ## Step 8.  
 [R script to edit the training data set genotype file before we can merge with the new cycle samples file](https://github.com/ncsumaize/ReFUS-genomic-selection/blob/master/Get%20SNP%20site%20list%20from%20training%20data%20to%20filter%20C4%20GBS%20data.R). The previous version had very long marker names tracking the position information from AGPv2, 3, and 4!. Here we trim that to just the usual AGPv4 site names, and this will match with the new file marker names.  
